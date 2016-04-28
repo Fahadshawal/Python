@@ -48,7 +48,7 @@ def FCFS(num,dictlist):
 		if loop == 0:
 			total = total + dictlist[loop]['arrive'] + dictlist[loop]['process']
 		elif total > dictlist[loop]['arrive']:
-			total = total + dictlist[loop]['arrive']
+			total = total + dictlist[loop]['process']
 		else:
 			total = dictlist[loop]['arrive']  + dictlist[loop]['process']
 			
@@ -67,10 +67,49 @@ def SJF(num,dictlist):
 	from operator import itemgetter
 	dictlist.sort(key = itemgetter('process'))
 	while(loop < num):
-		
-		total = total + dictlist[loop]['process']
+		if loop == 0:
+			total = total + dictlist[loop]['arrive'] + dictlist[loop]['process']
+		else:
+			total = total + dictlist[loop]['process']
 		print "%s Takes %d sec to complete its processing" % (dictlist[loop]['name'],total)
 		loop = loop+1
+	print "SHORT JOB FIRST SERVE ALGORITHUM IS ENDS \n"
+
+#------------------------------------------------------------------------------------------------------------
+#function is doing shortest ramining time first
+#------------------------------------------------------------------------------------------------------------	
+def SRTF(num,dictlist):
+	print "SHORT JOB FIRST SERVE ALGORITHUM IS RUNNING"
+	total = 0
+	loop = num
+	from operator import itemgetter
+	dictlist.sort(key = itemgetter('arrive'))
+	temp = dictlist[0]
+	del dictlist[0]
+	total = total + temp['arrive']
+	loop1 = 0
+	while(loop):	
+		loop2 = 0
+		index= 0
+		while(loop2 < loop-1):
+				if(temp['process'] > dictlist [index]['process']):
+					if(dictlist[index]['arrive'] <= total):
+						dictlist += [temp]
+						temp = dictlist[index]
+						del dictlist[index]
+					else:
+						index = index + 1
+				loop2 = loop2+1
+			
+		temp['process'] = temp['process']-1
+		total = total + 1
+		if(temp['process'] == 0):
+			print "%s Takes %d sec to complete its processing" % (temp['name'],total)
+			if(loop != 1):
+				dictlist.sort(key = itemgetter('arrive'))
+				temp = dictlist[0]
+				del dictlist[0]
+			loop = loop - 1 
 	print "SHORT JOB FIRST SERVE ALGORITHUM IS ENDS \n"
 
 	
@@ -85,9 +124,4 @@ dictlist = []
 GetInput(num,dictlist)
 FCFS(num,dictlist)
 SJF(num,dictlist)
-
-
-
-
-
-	
+SRTF(num,dictlist)
