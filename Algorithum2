@@ -1,0 +1,125 @@
+#This Function is Used To clear The Screen
+def Clear():
+	import os
+	os.system('clear')
+	return
+	
+#This function will get the number of jobs for calculation
+def GetNumber():
+	Clear()
+	print("\v\v\v\t\tHow Many Number Of Job(s) You Want to Enter : ")
+	return input()
+	
+#This function will take input from the user to the dictionary list
+def GetInput(num,dictlist):
+	Clear()
+	num1 = 0
+	loop = 0
+
+	while(num1 < num):
+		info = {}
+		info['name']=raw_input ("Input Name : ")
+		info['arrive']=input ("Input A.Time : ")
+		info['process']=input ("Input P.Time : ")
+		info['brust'] = 0
+		info['wait'] = 0
+		dictlist.append(info)
+		num1 = num1+1
+	return
+	
+#------------------------------------------------------------------------------------------------------------
+#function is doing shortest ramining time first
+#------------------------------------------------------------------------------------------------------------	
+def SRTF(num,dictlist):
+	clear()
+	print "SHORT JOB FIRST SERVE ALGORITHUM IS RUNNING"
+	total = 0
+	loop = num
+	from operator import itemgetter
+	dictlist.sort(key = itemgetter('arrive'))
+	temp = dictlist[0]
+	del dictlist[0]
+	total = total + temp['arrive']
+	loop1 = 0
+	while(loop):	
+		loop2 = 0
+		index= 0
+		while(loop2 < loop-1):
+				if(temp['process'] > dictlist [index]['process']):
+					if(dictlist[index]['arrive'] <= total):
+						dictlist += [temp]
+						temp = dictlist[index]
+						del dictlist[index]
+					else:
+						index = index + 1
+				loop2 = loop2+1
+			
+		temp['process'] = temp['process']-1
+		total = total + 1
+		if(temp['process'] == 0):
+			print "%s Takes %d sec to complete its processing" % (temp['name'],total)
+			if(loop != 1):
+				dictlist.sort(key = itemgetter('arrive'))
+				temp = dictlist[0]
+				del dictlist[0]
+			loop = loop - 1 
+	print "SHORT JOB FIRST SERVE ALGORITHUM IS ENDS \n"
+
+
+#------------------------------------------------------------------------------------------------------------
+#function is doing Round Robin time first
+#------------------------------------------------------------------------------------------------------------	
+def RR(num,dictlist,Slice,IO):
+	Clear()
+	loop = num
+	print "SHORT JOB FIRST SERVE ALGORITHUM IS RUNNING"
+	wait = []
+	total = 0
+	temp = None
+	from operator import itemgetter
+	dictlist.sort(key = itemgetter('arrive'))
+
+	while(loop):
+		if((len(dictlist) != 0) or (temp != None)):
+			if(temp == None):
+				temp = dictlist[0]
+				temp['brust'] = Slice
+				del dictlist[0]
+			total = total + 1
+			temp['brust'] = temp['brust'] - 1
+			temp['process'] = temp['process'] - 1
+			if(temp['process'] == 0):
+				print "%s Turn Around Time is : %d And its Waiting time is : %d" % (temp['name'],total,total-temp['arrive'])
+				loop = loop - 1
+				if(len(dictlist) != 0):
+					temp = dictlist[0]
+				else:
+					temp = None
+			elif(temp['brust'] == 0):
+				temp['wait'] = total + IO
+				wait += [temp]
+				temp = None
+
+		if(len(wait) != 0):
+			wait.sort(key = itemgetter('wait'))
+			if(wait[0]['wait'] <= total):
+				dictlist += [wait[0]]
+				del wait[0]
+			elif(loop):
+				print (loop)
+				total  = total + 1
+	
+	print "SHORT JOB FIRST SERVE ALGORITHUM IS ENDS \n"
+
+	
+#-------------------------------------------------------#
+#Here Is the Main Progrma Will executed Using Functions #
+#-------------------------------------------------------#
+num = GetNumber()
+
+dictlist = []
+GetInput(num,dictlist)
+SLICE = input("Input The Time Slice : ")
+IO = input("Input The I/O Brust Time : ")
+
+RR(num,dictlist,SLICE,IO)
