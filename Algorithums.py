@@ -82,34 +82,37 @@ def SRTF(num,dictlist):
 	print "SHORT JOB FIRST SERVE ALGORITHUM IS RUNNING"
 	total = 0
 	loop = num
+	ready = []
 	from operator import itemgetter
 	dictlist.sort(key = itemgetter('arrive'))
 	temp = dictlist[0]
 	del dictlist[0]
-	total = total + temp['arrive']
-	loop1 = 0
-	while(loop):	
-		loop2 = 0
-		index= 0
-		while(loop2 < loop-1):
-				if(temp['process'] > dictlist [index]['process']):
-					if(dictlist[index]['arrive'] <= total):
-						dictlist += [temp]
-						temp = dictlist[index]
-						del dictlist[index]
-					else:
-						index = index + 1
-				loop2 = loop2+1
-			
-		temp['process'] = temp['process']-1
-		total = total + 1
-		if(temp['process'] == 0):
-			print "%s Takes %d sec to complete its processing" % (temp['name'],total)
-			if(loop != 1):
-				dictlist.sort(key = itemgetter('arrive'))
-				temp = dictlist[0]
+	total = temp['arrive']
+	
+	while(loop):
+		if(len(dictlist) != 0):
+			if(dictlist[0]['arrive'] <= total):
+				ready += [dictlist[0]]
 				del dictlist[0]
-			loop = loop - 1 
+			
+		if(len(ready) != 0):
+			ready.sort(key = itemgetter('process'))
+
+		if(len(ready) != 0 ):
+			if(temp['process'] > ready[0]['process']):
+				ready += [temp]
+				temp = ready[0]
+				del ready[0]
+		
+		temp['process'] -= 1
+		total += 1
+		if(temp['process'] == 0):
+			print "%s Turn Around Time Is : %d  Waiting Time Is : %d" % (temp['name'],total,total-(temp['arrive']+temp['sum']))
+			loop = loop - 1
+			if(len(ready) != 0):
+				temp = ready[0]
+				del ready[0]
+
 	print "SHORT JOB FIRST SERVE ALGORITHUM IS ENDS \n"
 
 	
