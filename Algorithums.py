@@ -65,15 +65,20 @@ def SJF(num,dictlist):
 	loop = 0
 	inloop = 0
 	from operator import itemgetter
-	dictlist.sort(key = itemgetter('process'))
+	dictlist.sort(key = itemgetter('arrive','process'))
 	while(loop < num):
 		if loop == 0:
 			total = total + dictlist[loop]['arrive'] + dictlist[loop]['process']
-		else:
+		elif total > dictlist[loop]['arrive']:
 			total = total + dictlist[loop]['process']
-		print "%s Takes %d sec to complete its processing" % (dictlist[loop]['name'],total)
+		else:
+			total = dictlist[loop]['arrive']  + dictlist[loop]['process']
+		print "%s Turn Around Time Is : %d  Waiting Time Is : %d" % (dictlist[loop]['name'],total,total-(dictlist[loop]['arrive'] + dictlist[loop]['process']))
+
 		loop = loop+1
 	print "SHORT JOB FIRST SERVE ALGORITHUM IS ENDS \n"
+
+
 
 #------------------------------------------------------------------------------------------------------------
 #function is doing shortest ramining time first
