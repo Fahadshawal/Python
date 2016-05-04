@@ -32,44 +32,54 @@ def GetInput(num,dictlist):
 #------------------------------------------------------------------------------------------------------------	
 def RR(num,dictlist,Slice,IO):
 	Clear()
-	loop = num
 	print "SHORT JOB FIRST SERVE ALGORITHUM IS RUNNING"
+	ready = []
 	wait = []
+	loop = num
 	total = 0
 	temp = None
 	from operator import itemgetter
-	dictlist.sort(key = itemgetter('arrive'))
-
+	wait.sort(key = itemgetter('wait'))	
 	while(loop):
-		if((len(dictlist) != 0) or (temp != None)):
-			if(temp == None):
-				temp = dictlist[0]
-				temp['brust'] = Slice
+
+		if(len(dictlist) != 0):
+			if(dictlist[0]['arrive'] <= total):
+				ready += [dictlist[0]]
 				del dictlist[0]
-			total = total + 1
-			temp['brust'] = temp['brust'] - 1
-			temp['process'] = temp['process'] - 1
+		
+		if(len(ready) != 0):
+			if(temp == None):
+				temp = ready[0]
+				temp['brust'] = Slice
+				del ready[0]
+		
+		if(temp != None):
+			total  += 1
+			temp['brust'] -= 1
+			temp['process'] -= 1
+			
 			if(temp['process'] == 0):
-				print "%s Turn Around Time is : %d And its Waiting time is : %d" % (temp['name'],total,total-temp['arrive'])
-				loop = loop - 1
-				if(len(dictlist) != 0):
-					temp = dictlist[0]
+				print "%s Turn Around Time is : %d And its Waiting time is : %d" % (temp['name'],total,total-(temp['arrive']+temp['sum']))
+				loop -= 1
+				if(len(ready) != 0):
+					temp = ready[0]
+					temp['brust'] = Slice
 				else:
 					temp = None
 			elif(temp['brust'] == 0):
 				temp['wait'] = total + IO
 				wait += [temp]
 				temp = None
-
+		else:
+			total += 1
+		
 		if(len(wait) != 0):
 			wait.sort(key = itemgetter('wait'))
 			if(wait[0]['wait'] <= total):
-				dictlist += [wait[0]]
+				ready += [wait[0]]
 				del wait[0]
-			elif(loop):
-				print (loop)
-				total  = total + 1
 	
+
 	print "SHORT JOB FIRST SERVE ALGORITHUM IS ENDS \n"
 
 	
